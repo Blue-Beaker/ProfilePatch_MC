@@ -1,5 +1,5 @@
 {
-	"package": "io.bluebeaker.threadedskinloading.mixin_core",
+	"package": "io.bluebeaker.profilepatch.mixin",
 	"required": false,
 	"refmap": "${mixin_refmap}",
 	"target": "@env(DEFAULT)",

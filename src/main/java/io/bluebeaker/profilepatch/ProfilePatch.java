@@ -1,8 +1,9 @@
-package io.bluebeaker.threadedskinloading;
+package io.bluebeaker.profilepatch;
 
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.logging.log4j.Logger;
 
-import io.bluebeaker.threadedskinloading.Tags;
+import io.bluebeaker.profilepatch.Tags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigManager;
@@ -14,8 +15,14 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = Tags.MOD_ID, name = Tags.MOD_NAME, version = Tags.VERSION)
-public class ThreadedSkinLoading
+import java.sql.Time;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static io.bluebeaker.profilepatch.ProfilePatchConfig.cleanInterval;
+
+@Mod(modid = Tags.MOD_ID, name = Tags.MOD_NAME, version = Tags.VERSION,acceptableRemoteVersions = "*")
+public class ProfilePatch
 {
     public static final String MODID = Tags.MOD_ID;
     public static final String NAME = Tags.MOD_NAME;
@@ -24,8 +31,10 @@ public class ThreadedSkinLoading
     public MinecraftServer server;
 
     private static Logger logger;
+
+    private static Timer cleanTimer;
     
-    public ThreadedSkinLoading() {
+    public ProfilePatch() {
         MinecraftForge.EVENT_BUS.register(this);
     }
     
@@ -36,6 +45,18 @@ public class ThreadedSkinLoading
     @EventHandler
     public void onServerStart(FMLServerStartingEvent event){
         this.server=event.getServer();
+    }
+
+    @EventHandler
+    public void init(FMLInitializationEvent event){
+        cleanTimer = new Timer();
+        // Clean every hour
+        cleanTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                SessionCache.cleanAll();
+            }
+        }, cleanInterval* 1000L, cleanInterval* 1000L);
     }
 
     @SubscribeEvent

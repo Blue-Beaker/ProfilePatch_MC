@@ -1,4 +1,4 @@
-package io.bluebeaker.threadedskinloading;
+package io.bluebeaker.profilepatch;
 
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -10,13 +10,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@IFMLLoadingPlugin.Name("threadedskinloading")
+@IFMLLoadingPlugin.Name("profilepatch")
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
-public class ThreadedSkinLoadingCoreMixins implements IFMLLoadingPlugin, IEarlyMixinLoader {
+public class ProfilePatchCoreMixins implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public List<String> getMixinConfigs() {
-        return Collections.singletonList("mixins.threadedskinloading_core.json");
+        return Collections.singletonList("mixins.profilepatch_core.json");
     }
 
     @Override
