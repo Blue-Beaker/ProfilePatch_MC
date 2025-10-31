@@ -11,6 +11,8 @@ public class ProfilePatchConfig {
 
     @Comment("Expiration time for cached invalid UUIDs, in seconds")
     public static int expirationInterval = 21600;
-    @Comment("Clean interval to clean cached invalid UUIDs, in seconds")
+
+    @Config.RequiresMcRestart
+    @Comment("Time interval to clean cached invalid UUIDs, in seconds")
     public static int cleanInterval = 3600;
 }

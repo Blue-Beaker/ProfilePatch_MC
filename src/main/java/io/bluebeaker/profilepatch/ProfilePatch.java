@@ -1,9 +1,8 @@
 package io.bluebeaker.profilepatch;
 
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
 
-import io.bluebeaker.profilepatch.Tags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigManager;
@@ -11,13 +10,9 @@ import net.minecraftforge.common.config.Config.Type;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.sql.Time;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import static io.bluebeaker.profilepatch.ProfilePatchConfig.cleanInterval;
 
@@ -48,15 +43,10 @@ public class ProfilePatch
     }
 
     @EventHandler
-    public void init(FMLInitializationEvent event){
-        cleanTimer = new Timer();
-        // Clean every hour
-        cleanTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                SessionCache.cleanAll();
-            }
-        }, cleanInterval* 1000L, cleanInterval* 1000L);
+    public void loadComplete(FMLLoadCompleteEvent event){
+        cleanTimer = new Timer("ProfilePatch Clean");
+
+        cleanTimer.schedule(SessionCache.getCleanTask(), cleanInterval* 1000L, cleanInterval* 1000L);
     }
 
     @SubscribeEvent

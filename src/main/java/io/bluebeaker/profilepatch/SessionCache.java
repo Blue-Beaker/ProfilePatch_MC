@@ -4,6 +4,7 @@ import com.mojang.authlib.minecraft.MinecraftSessionService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import static io.bluebeaker.profilepatch.ProfilePatchConfig.expirationInterval;
@@ -44,5 +45,14 @@ public class SessionCache {
         for (SessionCache inst : instances.values()) {
             inst.clean();
         }
+    }
+
+    public static TimerTask getCleanTask(){
+        return new TimerTask() {
+            @Override
+            public void run() {
+                cleanAll();
+            }
+        };
     }
 }
