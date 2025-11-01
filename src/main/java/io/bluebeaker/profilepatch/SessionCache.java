@@ -29,13 +29,14 @@ public class SessionCache {
         }
     }
     public boolean isInvalid(UUID uuid){
-        // Only cache for 6 hours
+        // Check expiration
         Long l = this.cachedInvalidUUIDs.get(uuid);
         return l!=null && System.currentTimeMillis() < l +expirationInterval* 1000L;
     }
     public void clean(){
         long time = System.currentTimeMillis();
         for (UUID uuid : new ArrayList<>(cachedInvalidUUIDs.keySet())) {
+            // Clean expired entries
             if(time > this.cachedInvalidUUIDs.get(uuid) +expirationInterval* 1000L){
                 cachedInvalidUUIDs.remove(uuid);
             }
