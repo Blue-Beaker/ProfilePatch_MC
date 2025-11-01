@@ -23,7 +23,8 @@ public class SessionCache {
     }
 
     public void putInvalidUUID(UUID uuid){
-        this.cachedInvalidUUIDs.put(uuid,System.currentTimeMillis());
+        // Put the expiration timestamp
+        this.cachedInvalidUUIDs.put(uuid,System.currentTimeMillis()+expirationInterval* 1000L);
         if(ProfilePatchConfig.logUUIDs){
             ProfilePatch.getLogger().info("Added non-existent player UUID {} to cache.",uuid);
         }
@@ -31,21 +32,19 @@ public class SessionCache {
     public boolean isInvalid(UUID uuid){
         // Check expiration
         Long l = this.cachedInvalidUUIDs.get(uuid);
-        return l!=null && System.currentTimeMillis() < l +expirationInterval* 1000L;
+        return l!=null && System.currentTimeMillis() < l;
     }
     public void clean(){
         long time = System.currentTimeMillis();
         for (UUID uuid : new ArrayList<>(cachedInvalidUUIDs.keySet())) {
             // Clean expired entries
-            if(time > this.cachedInvalidUUIDs.get(uuid) +expirationInterval* 1000L){
+            if(time > this.cachedInvalidUUIDs.get(uuid)){
                 cachedInvalidUUIDs.remove(uuid);
             }
         }
     }
     public static void cleanAll(){
-        for (SessionCache inst : instances.values()) {
-            inst.clean();
-        }
+        instances.values().forEach(SessionCache::clean);
     }
 
     public static TimerTask getCleanTask(){

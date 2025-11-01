@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = YggdrasilMinecraftSessionService.class,remap = false)
 public abstract class MixinMinecraftSessionService {
     // The first return when response==null but without an Exception
+    // Can occur when the UUID is invalid
     @Inject(method = "fillGameProfile",at = @At(value = "RETURN",ordinal = 0))
     public void cacheNonExistentUUIDs(GameProfile profile, boolean requireSecure, CallbackInfoReturnable<GameProfile> cir){
         if(ProfilePatchConfig.expirationInterval>0) {
